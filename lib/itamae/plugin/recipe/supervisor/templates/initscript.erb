@@ -1,0 +1,58 @@
+#!/bin/bash
+# Supervisor
+#
+# chkconfig: 345 80 80
+
+# functions
+. /etc/init.d/functions
+
+DAEMON=/usr/bin/supervisord
+PIDFILE=<%= @p["pidfile"] %>
+LOCKFILE=/var/lock/subsys/supervisord
+CONFFILE=<%= @p["configfile"] %>
+
+start() {
+        echo -n "Starting supervisord: "
+        if [ -f $PIDFILE ]; then
+                PID=`cat $PIDFILE`
+                echo supervisord already running: $PID
+                exit 2;
+        else
+                daemon  $DAEMON --pidfile=$PIDFILE --configuration=$CONFFILE
+                RETVAL=$?
+                echo
+                [ $RETVAL -eq 0 ] && touch $LOCKFILE
+                return $RETVAL
+        fi
+
+}
+
+stop() {
+        echo -n "Shutting down supervisord: "
+        echo
+        killproc -p $PIDFILE supervisord
+        echo
+        rm -f $LOCKFILE
+        return 0
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status supervisord
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage:  {start|stop|status|restart}"
+        exit 1
+        ;;
+esac
+exit $?

@@ -1,0 +1,43 @@
+[program:<%= @p.service_name %>]
+command=<%= @p.command %>
+process_name=<%= @p.process_name %>
+numprocs=<%= @p.numprocs %>
+numprocs_start=<%= @p.numprocs_start %>
+priority=<%= @p.priority %>
+autostart=<%= @p.autostart ? 'true' : 'false' %>
+autorestart=<%= @p.autorestart ? 'true' : 'false' %>
+startsecs=<%= @p.startsecs %>
+startretries=<%= @p.startretries %>
+exitcodes=<%= @p.exitcodes.join(',') %>
+stopsignal=<%= @p.stopsignal %>
+stopwaitsecs=<%= @p.stopwaitsecs %>
+<%- unless @p.stopasgroup.nil? -%>
+stopasgroup=<%= @p.stopasgroup %>
+<%- end -%>
+<%- unless @p.killasgroup.nil? -%>
+killasgroup=<%= @p.killasgroup %>
+<%- end -%>
+<%- if @p.user -%>
+user=<%= @p.user %>
+<%- end -%>
+redirect_stderr=<%= @p.redirect_stderr ? 'true' : 'false' %>
+stdout_logfile=<%= @p.stdout_logfile %>
+stdout_logfile_maxbytes=<%= @p.stdout_logfile_maxbytes %>
+stdout_logfile_backups=<%= @p.stdout_logfile_backups %>
+stdout_capture_maxbytes=<%= @p.stdout_capture_maxbytes %>
+stdout_events_enabled=<%= @p.stdout_events_enabled ? 'true' : 'false' %>
+stderr_logfile=<%= @p.stderr_logfile %>
+stderr_logfile_maxbytes=<%= @p.stderr_logfile_maxbytes %>
+stderr_logfile_backups=<%= @p.stderr_logfile_backups %>
+stderr_capture_maxbytes=<%= @p.stderr_capture_maxbytes %>
+stderr_events_enabled=<%= @p.stderr_events_enabled ? 'true' : 'false' %>
+<%- unless @p.environment.empty? -%>
+environment=<%= @p.environment.sort.map{|k,v| "#{k}=\"#{v}\""}.join(',') %>
+<%- end -%>
+<%- if @p.directory -%>
+directory=<%= @p.directory %>
+<%- end -%>
+<%- if @p.umask -%>
+umask=<%= @p.umask %>
+<%- end -%>
+serverurl=<%= @p.serverurl %>
