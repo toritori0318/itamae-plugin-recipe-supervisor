@@ -25,6 +25,8 @@ end
 
 # pip install
 package 'python-pip'
+# install supervisor
+execute "pip install supervisor"
 
 # init script
 template "/etc/init.d/supervisor" do
@@ -42,5 +44,5 @@ template "/etc/supervisord.conf" do
 end
 
 service "supervisor" do
-  action :enable
+  action [:enable, :start]
 end
