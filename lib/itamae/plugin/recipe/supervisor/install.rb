@@ -44,5 +44,5 @@ template "/etc/supervisord.conf" do
 end
 
 service "supervisor" do
-  action [:enable, :start]
+  action [:enable, :restart]
 end
