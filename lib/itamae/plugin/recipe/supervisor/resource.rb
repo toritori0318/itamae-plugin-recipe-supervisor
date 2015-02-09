@@ -60,7 +60,6 @@ define :supervisor_group,
     source File.expand_path(File.dirname(__FILE__)) + "/templates/group.conf.erb"
     variables(p: tparams)
     mode "644"
-    notifies :update, "supervisorctl_group[#{params[:name]}]", :delay
   end
 
 end
