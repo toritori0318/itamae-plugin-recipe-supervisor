@@ -33,14 +33,14 @@ template "/etc/init.d/supervisor" do
   source File.expand_path(File.dirname(__FILE__)) + "/templates/initscript.erb"
   variables(p: node['supervisor'])
   mode "755"
-  notifies :restart, "service[supervisor]", :immediately
+  notifies :restart, "service[supervisor]", :delay
 end
 
 template "/etc/supervisord.conf" do
   source File.expand_path(File.dirname(__FILE__)) + "/templates/supervisord.conf.erb"
   variables(p: node['supervisor'])
   mode "644"
-  notifies :restart, "service[supervisor]", :immediately
+  notifies :restart, "service[supervisor]", :delay
 end
 
 service "supervisor" do
