@@ -24,25 +24,41 @@ directory node['supervisor']['include'] do
 end
 
 # pip install
-package 'python-pip'
+package 'python-setuptools'
 # install supervisor
-execute "pip install supervisor"
+execute "easy_install supervisor"
+# link
+link "/usr/bin/supervisorctl" do
+  to "/usr/local/bin/supervisorctl"
+  only_if "! test -e /usr/bin/supervisorctl"
+end
 
 # init script
 template "/etc/init.d/supervisor" do
   source File.expand_path(File.dirname(__FILE__)) + "/templates/initscript.erb"
   variables(p: node['supervisor'])
   mode "755"
-  notifies :restart, "service[supervisor]", :delay
+  notifies :run, "execute[supervisor restart(zombie aversion)]", :immediately
 end
 
 template "/etc/supervisord.conf" do
   source File.expand_path(File.dirname(__FILE__)) + "/templates/supervisord.conf.erb"
   variables(p: node['supervisor'])
   mode "644"
-  notifies :restart, "service[supervisor]", :delay
+  notifies :run, "execute[supervisor restart(zombie aversion)]", :immediately
+end
+
+execute "supervisor restart(zombie aversion)" do
+  command <<-"EOH"
+if ( supervisorctl avail ) < /dev/null > /dev/null 2>&1; then
+  echo "- supervisorctl stop all.."
+  supervisorctl stop all
+  sleep 1
+fi
+service supervisor restart
+EOH
 end
 
 service "supervisor" do
-  action [:enable, :restart]
+  action [:enable]
 end
