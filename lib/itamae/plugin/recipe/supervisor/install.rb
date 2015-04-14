@@ -43,16 +43,15 @@ template "/etc/init.d/supervisor" do
   source File.expand_path(File.dirname(__FILE__)) + "/templates/initscript.erb"
   variables(p: node['supervisor'])
   mode "755"
-  notifies :run, "execute[supervisor restart(zombie aversion)]", :immediately
 end
-
+# config
 template "/etc/supervisord.conf" do
   source File.expand_path(File.dirname(__FILE__)) + "/templates/supervisord.conf.erb"
   variables(p: node['supervisor'])
   mode "644"
-  notifies :run, "execute[supervisor restart(zombie aversion)]", :immediately
 end
 
+# restart resource
 execute "supervisor restart(zombie aversion)" do
   command <<-"EOH"
 if ( supervisorctl avail ) < /dev/null > /dev/null 2>&1; then
@@ -62,8 +61,12 @@ if ( supervisorctl avail ) < /dev/null > /dev/null 2>&1; then
 fi
 service supervisor restart
 EOH
+   action :nothing
+   subscribes :run, "template[/etc/supervisord.conf]",  :delayed
+   subscribes :run, "template[/etc/init.d/supervisor]", :delayed
 end
 
+# service
 service "supervisor" do
   action [:enable]
 end
