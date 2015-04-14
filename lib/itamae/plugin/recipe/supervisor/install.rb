@@ -32,6 +32,11 @@ link "/usr/bin/supervisorctl" do
   to "/usr/local/bin/supervisorctl"
   only_if "! test -e /usr/bin/supervisorctl"
 end
+# link
+link "/usr/bin/supervisord" do
+  to "/usr/local/bin/supervisord"
+  only_if "! test -e /usr/bin/supervisord"
+end
 
 # init script
 template "/etc/init.d/supervisor" do
