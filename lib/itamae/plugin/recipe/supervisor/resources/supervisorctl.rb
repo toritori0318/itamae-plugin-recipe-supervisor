@@ -6,7 +6,6 @@ module Itamae
       class Supervisorctl < Itamae::Resource::Base
         define_attribute :action, default: :restart
         define_attribute :name, default: nil, default_name: true
-        define_attribute :group, default: false
 
         def set_current_attributes
           super
@@ -38,7 +37,7 @@ module Itamae
         def exec(action, enable_all=false)
           command = ["supervisorctl", action]
           if attributes.name
-            name = (attributes.group) ? "#{attributes.name}:*" : attributes.name
+            name = attributes.name
             command.push(name)
           elsif enable_all
             command.push("all")
@@ -47,9 +46,6 @@ module Itamae
         end
 
         def ensure_supervisor_availability
-          if attributes.group && !attributes.name
-            raise "require `name` attribute."
-          end
         end
       end
     end
