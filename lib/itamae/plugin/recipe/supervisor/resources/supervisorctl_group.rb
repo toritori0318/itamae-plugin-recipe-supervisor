@@ -21,12 +21,6 @@ module Itamae
           run_command(command)
         end
 
-        def ensure_supervisor_availability
-          if attributes.name
-            raise "require `name` attribute."
-          end
-        end
-
       end
     end
   end
